@@ -23,4 +23,4 @@ def subTwoNos():
 #     return product
 
 # if __name__ == '__main__':
-app.run(port='3001')
+app.run()
