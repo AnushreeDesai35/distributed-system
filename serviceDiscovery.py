@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request
+from flask import request, jsonify
 from requests import get
 
 serviceMapping = {
@@ -11,13 +11,9 @@ serviceMapping = {
     }
 }
 app = Flask(__name__)
-# @app.route('/', defaults={'path': ''})
 @app.route('/service/<serviceName>')
 def discoverService(serviceName):
-    serviceName = request.args("serviceName")
     serviceEndpoints = serviceMapping[serviceName]["endpoints"]
-    return serviceEndpoints
+    return jsonify(serviceEndpoints)
 
 app.run(host="127.0.0.1", port="5001")
-
-# discoverService()
