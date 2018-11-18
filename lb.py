@@ -3,17 +3,17 @@ from requests import get
 
 def createLB():
     app = Flask(__name__)
-    servers = ["http://localhost:5000/", "http://localhost:3001/"]
+    servers = ["http://localhost:5000/", "http://localhost:5001/"]
 
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def forward(path):
-        # server = servers[current]
-        # current = (current + 1) % len(servers)
-        print(path)
-        return get(servers[0] + path).content
+        forward.current = (forward.current + 1) % len(servers)
+        server = servers[forward.current]
+        print(path, forward.current)
+        return get(server + path).content
 
+    forward.current = 0
     app.run(host="0.0.0.0", port="80")
 
-# if __name__ == '__main__':
 createLB()
