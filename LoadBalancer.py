@@ -11,7 +11,10 @@ def createLB():
     def forward(path):
         dicoveryRequest = servers[0]+"/service/add"
         serviceEndpoints = get(dicoveryRequest).content
-        return serviceEndpoints
+        server = serviceEndpoints[forward.current]
+        print(serviceEndpoints)
+        forward.current = (forward.current + 1) % len(serviceEndpoints)
+        return get(server).content
 
     forward.current = 0
     app.run(host="0.0.0.0", port="80")
