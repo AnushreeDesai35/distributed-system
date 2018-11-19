@@ -4,11 +4,14 @@ from requests import get
 
 serviceMapping = {
     "add": {
-        "endpoints":["127.0.0.1:5000","127.0.0.1:3001"],
+        "endpoints":["127.0.0.1:5003","127.0.0.1:3001"],
     },
     "subtract": {
         "endpoints":["127.0.0.1:5000","127.0.0.1:3001"],
-    }
+    },
+    "multiply": {
+        "endpoints":["127.0.0.1:5004"],
+    },
 }
 app = Flask(__name__)
 @app.route('/service/<serviceName>')
