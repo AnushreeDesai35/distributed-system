@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from requests import get
+import json
 
 def createLB():
     app = Flask(__name__)
@@ -9,12 +10,13 @@ def createLB():
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def forward(path):
-        dicoveryRequest = servers[0]+"/service/add"
-        serviceEndpoints = get(dicoveryRequest).content
+        serviceName = path[path.rfind('/'):]
+        print(serviceName)
+        dicoveryRequest = servers[0]+"/service" + serviceName
+        serviceEndpoints = json.loads(get(dicoveryRequest).content)
         server = serviceEndpoints[forward.current]
-        print(serviceEndpoints)
         forward.current = (forward.current + 1) % len(serviceEndpoints)
-        return get(server).content
+        return get(server + path).content
 
     forward.current = 0
     app.run(host="0.0.0.0", port="80")
