@@ -1,29 +1,29 @@
-//     def forward(path):
-//         serviceName = path[path.rfind('/'):]
-//         print(serviceName)
-//         dicoveryRequest = servers[0]+"/service" + serviceName
-//         serviceEndpoints = json.loads(get(dicoveryRequest).content)
-//         server = serviceEndpoints[forward.current]
-//         forward.current = (forward.current + 1) % len(serviceEndpoints)
-//         return get(server + path).content
-
-//     forward.current = 0
-//     app.run(host="0.0.0.0", port="80")
-
 const express = require("express");
+const fetch = require("node-fetch");
 
 const PORT = 80;
-const registryServer = ["http://localhost:5001"];
+const registryServer = ["http://localhost:5005"];
 const app = express();
 
+let current = 0;
+
+let forwardServiceRequest = async function(url, req, res) {
+    let response = await fetch(url);
+    let json = await response.json();
+    let endpoints = json.result;
+
+    let serviceUrl = "http://" + endpoints[current] + req.url;
+    current = (current + 1) % endpoints.length;
+    console.log(`forwarded: ${serviceUrl}`);
+    res.redirect(serviceUrl);
+};
+
 let requestHandler = (request, response) => {
-    response.send("Hello from Express!");
-    console.log(request.path, request.url);
+    console.log(`Request: ${request.url}`);
     let path = request.path;
     let serviceName = path.substr(path.lastIndexOf('/'));
     let dicoveryRequest = registryServer[0] + "/service" + serviceName;
-    let serviceEndpoints = fetch(dicoveryRequest).then(res => res.json()).then(json => json);
-
+    forwardServiceRequest(dicoveryRequest, request, response);
 };
 
 app.all('*', requestHandler);
@@ -41,5 +41,4 @@ app.listen(PORT, (err) => {
 // TODO:
 // - x-request-forward
 // - leastconn algorithm
-// - round-robin algorithm
 // """
