@@ -11,12 +11,14 @@ def createLB():
     @app.route('/<path:path>')
     def forward(path):
         serviceName = path[path.rfind('/'):]
-        print(serviceName)
         dicoveryRequest = servers[0]+"/service" + serviceName
         serviceEndpoints = json.loads(get(dicoveryRequest).content)
         server = serviceEndpoints[forward.current]
         forward.current = (forward.current + 1) % len(serviceEndpoints)
-        return get(server + path).content
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print(path)
+        # print('http://' + server + '/' + path + '?x=' + request.args['x'] + '&y=' + request.args['y'])
+        return get('http://' + server + '/' + path + '?x=' + request.args['x'] + '&y=' + request.args['y']).content
 
     forward.current = 0
     app.run(host="0.0.0.0", port="80")
