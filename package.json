@@ -1,5 +1,5 @@
 {
-  "name": "nodejs_restful",
+  "name": "distributed-system",
   "version": "1.0.0",
   "description": "A distributed system with service discovery and load balancer",
   "main": "index.js",
@@ -10,13 +10,14 @@
     "type": "git",
     "url": "git+https://github.com/div5yesh/distributed-system.git"
   },
-  "author": "Anushree Desai",
+  "author": "Anushree Desai, Divyesh Chitroda",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/div5yesh/distributed-system/issues"
   },
   "homepage": "https://github.com/div5yesh/distributed-system#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "node-fetch": "^2.3.0"
   }
 }
