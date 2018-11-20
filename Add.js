@@ -4,7 +4,7 @@ const port = process.env.PORT || 5003;
 
 app.get("/arith/add", (req, res) => {
   res.send({
-    result: parseInt(req.query['x']) - parseInt(req.query['y']),
+    result: parseInt(req.query['x']) + parseInt(req.query['y']),
     message: 'Addition done successfully'
   });
 });

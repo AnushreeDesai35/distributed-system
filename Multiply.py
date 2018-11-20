@@ -7,8 +7,13 @@ app = Flask(__name__)
 @app.route('/arith/multiply', methods=['GET'])
 def mulTwoNos():
     sum = 0
+    print('$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    print(request.args)
     for i in range(int(request.args['x'])):
-        path = "http://10.0.0.134:80?x="+sum+"&y="+int(request.args['y'])
+        print("CHECK FOR LOOP")
+        path = "http://10.0.0.134:80?x="+str(sum)+"&y="+str(request.args['y'])
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+        print(path)
         product = get(path).content
     return product
 
