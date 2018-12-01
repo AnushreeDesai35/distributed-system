@@ -1,26 +1,38 @@
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
 const port = process.env.PORT || 5005;
 
-serviceMapping = {
-    "add": {
-        "endpoints": ["127.0.0.1:5003", "127.0.0.1:3001"],
-    },
-    "subtract": {
-        "endpoints": ["127.0.0.1:5000", "127.0.0.1:3001"],
-    },
-    "multiply": {
-        "endpoints": ["127.0.0.1:5004"],
-    },
-}
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/service/:serviceName", (req, res) => {
+serviceMapping = {};
+
+app.get("/services", (req, res) => {
     console.log(`Request: ${req.url}`);
     res.send({
-        // result: serviceMapping[req.params.serviceName]["endpoints"],
         result: serviceMapping,
         message: 'Service endpoint returned successfully'
     });
+});
+
+app.post("/register/:serviceName", (req, res) => {
+    let serviceName = req.params.serviceName;
+    let serviceRecord = serviceMapping[serviceName];
+    if(serviceRecord){
+        if(serviceRecord.endpoints.indexOf(req.body.endpoint) < 0){
+            serviceRecord.endpoints.push(req.body.endpoint);
+        }
+    } else{
+        serviceMapping[serviceName] = {endpoints: [req.body.endpoint]};
+    }
+    res.send({
+        result: 1,
+        message: "success"
+    });
+    console.log(serviceMapping)
+    // init heartbeat
+    // call LB/updateSR
 });
 
 app.listen(port, () => {

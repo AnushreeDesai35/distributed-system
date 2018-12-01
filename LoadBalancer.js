@@ -1,17 +1,23 @@
 const express = require("express");
-const fetch = require("node-fetch");
+const bodyParser = require('body-parser');
 
 const PORT = 80;
 const registryServer = ["http://localhost:5005"];
-const app = express();
-let cachedSR;
 
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+let cachedSR;
 let current = 0;
 
+let getServiceParams = (request) => {
+    return request.path.substr(request.path.lastIndexOf('/') + 1);
+};
+
 let fetchCSR = async function (request, response) {
-    let path = request.path;
-    let serviceName = path.substr(path.lastIndexOf('/'));
-    let dicoveryRequest = registryServer[0] + "/service" + serviceName;
+    let serviceName = getServiceParams(request);
+    let dicoveryRequest = registryServer[0] + "/services";
     console.log('discovery request: ',dicoveryRequest)
     let resp = await fetch(dicoveryRequest);
     let json = await resp.json();
@@ -24,7 +30,9 @@ let forwardServiceRequest = (request, response) => {
     console.log(cachedSR);
     console.log(current);
     console.log(request.url);
-    let serviceUrl = "http://" + cachedSR[current] + request.url;
+    console.log(getServiceParams(request))
+    let endpoints = cachedSR[getServiceParams(request)].endpoints;
+    let serviceUrl = "http://" + endpoints[current] + request.url;
     current = (current + 1) % cachedSR.length;
     console.log(`forwarded: ${serviceUrl}`);
     response.redirect(serviceUrl);
@@ -47,13 +55,13 @@ let requestHandler = (request, response) => {
 
 let updateCSR = function(request, response) {
     console.log(`Update CSR ${cachedSR}`);
-    let endpoints = response.result;
-    cachedSR = endpoints;
+    let serviceMapping = request.body.serviceMapping;
+    cachedSR = serviceMapping;
 };
 
-// app.get("/updateSR", updateCSR);
+app.post("/updateSR", updateCSR);
 
-app.all('*', requestHandler);
+app.all('/arith/*', requestHandler);
 
 app.listen(PORT, (err) => {
     if (err) return console.log('something bad happened', err);
