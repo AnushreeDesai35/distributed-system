@@ -17,7 +17,8 @@ serviceMapping = {
 app.get("/service/:serviceName", (req, res) => {
     console.log(`Request: ${req.url}`);
     res.send({
-        result: serviceMapping[req.params.serviceName]["endpoints"],
+        // result: serviceMapping[req.params.serviceName]["endpoints"],
+        result: serviceMapping,
         message: 'Service endpoint returned successfully'
     });
 });

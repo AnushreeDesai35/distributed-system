@@ -12,7 +12,7 @@ let fetchCSR = async function (request, response) {
     let path = request.path;
     let serviceName = path.substr(path.lastIndexOf('/'));
     let dicoveryRequest = registryServer[0] + "/service" + serviceName;
-
+    console.log('discovery request: ',dicoveryRequest)
     let resp = await fetch(dicoveryRequest);
     let json = await resp.json();
     let endpoints = json.result;
@@ -20,6 +20,10 @@ let fetchCSR = async function (request, response) {
 };
 
 let forwardServiceRequest = (request, response) => {
+    console.log("^^^^^^^^^^^^^^^^^cachedSR");
+    console.log(cachedSR);
+    console.log(current);
+    console.log(request.url);
     let serviceUrl = "http://" + cachedSR[current] + request.url;
     current = (current + 1) % cachedSR.length;
     console.log(`forwarded: ${serviceUrl}`);
@@ -29,6 +33,8 @@ let forwardServiceRequest = (request, response) => {
 let requestHandler = (request, response) => {
     console.log(`Request: ${request.url}`);
     if (cachedSR) {
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        console.log(cachedSR);
         forwardServiceRequest(request, response);
     }
     else {
@@ -45,15 +51,12 @@ let updateCSR = function(request, response) {
     cachedSR = endpoints;
 };
 
-app.get("/updateSR", updateCSR);
+// app.get("/updateSR", updateCSR);
 
 app.all('*', requestHandler);
 
 app.listen(PORT, (err) => {
-    if (err) {
-        return console.log('something bad happened', err);
-    }
-
+    if (err) return console.log('something bad happened', err);
     console.log(`server is listening on ${PORT}`);
 });
 
