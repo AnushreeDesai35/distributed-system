@@ -17,5 +17,5 @@ let handleGET = (req, res) => {
   }
 };
 
-const add = new WebService("SUB", port);
-add.start(requesthandler);
+const subtract = new WebService("SUB", port);
+subtract.start(requesthandler);

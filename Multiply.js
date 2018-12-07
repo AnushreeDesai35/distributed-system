@@ -1,25 +1,40 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 5004;
 const fetch = require("node-fetch");
+const WebService = require('./WebService')
 
-app.get("/arith/multiply", async (req, res) => {
-    console.log("multiply request here");
-    console.log("x param: ", req.query['x']);
-    console.log("y param: ", req.query['y']);
-    var sum = 0
-    // var loadBalancer = "http://localhost/arith/add";
-    for(var i=0;i<req.query['x'];i++){
-        loadBalancer = "http://localhost:80/add?x="+sum+"&y="+req.query['y']
-        let resp = await fetch(loadBalancer);
-        console.log("Here is the resp: ",resp)
+const port = process.env.PORT || 5004;
+const SLBEndpoint = "http://localhost:8082";
+
+let requesthandler = (req, res) => {
+    if (req.method == WebService.METHOD.GET) {
+        handleGET(req, res);
     }
-    res.send({
-        result: parseInt(req.query['x']) * parseInt(req.query['y']),
-        message: 'Multplication done successfully'
-      });
-});
+};
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}...`);
-});
+let handleGET = async function (req, res) {
+    if (req.path == "/arith/mul") {
+        let x = req.query['x'];
+        let y = req.query['y'];
+        let product = 0;
+        try {
+            for (let i = 0; i < y; i++) {
+                let serviceURL = `${SLBEndpoint}/add?x=${product}&y=${x}`;
+                let response = await fetch(serviceURL);
+                let json = await response.json();
+                product = json.result;
+            }
+
+            res.send({
+                result: product,
+                message: 'Multiplication done successfully'
+            });
+        } catch (exception) {
+            res.send({
+                result: 0,
+                message: 'Multiplication failed'
+            });
+        }
+    }
+};
+
+const multiply = new WebService("MUL", port);
+multiply.start(requesthandler);
