@@ -1,14 +1,21 @@
-const express = require('express');
-const app = express();
+const WebService = require('./WebService')
+
 const port = process.env.PORT || 5004;
 
-app.get("/arith/add", (req, res) => {
-  res.send({
-    result: parseInt(req.query['x']) - parseInt(req.query['y']),
-    message: 'Substraction done successfully'
-  });
-});
+let requesthandler = (req, res) => {
+  if (req.method == WebService.METHOD.GET) {
+    handleGET(req, res);    
+  }
+};
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}...`);
-});
+let handleGET = (req, res) => {
+  if(req.path == "/arith/sub"){
+    res.send({
+      result: parseInt(req.query['x']) - parseInt(req.query['y']),
+      message: 'Subtraction done successfully'
+    });
+  }
+};
+
+const add = new WebService("SUB", port);
+add.start(requesthandler);
