@@ -1,18 +1,37 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const fs = require('fs');
+const convert = require('xml-js');
 
 class WebService {
-    constructor(name, port, ip = "127.0.0.1") {
+    constructor(name, port) {
         if (!port) {
-            throw "Port not assigned."
+            throw "Port not assigned.";
         }
         this.name = name;
-        this.endpoint = {
-            ip,
-            port
-        };
-        this.registryEndpoint = "http://127.0.0.1:8081";
+        this.wsdl = this.getWSDL();
         this.app = express();
+    }
+
+    getWSDL() {
+        let fileXMLData = null;
+        let serviceMapping = null;
+        fs.readFile('./WSDL'+this.name+'.xml', (error, data) => {
+            if(error){
+                console.log('Error while reading file', error);
+            }
+            else {
+                var jsonData = convert.xml2js(data, {
+                    compact: true,
+                    spaces: 4
+                });
+                fileXMLData[file] = jsonData;
+                serviceMapping = fileXMLData[file]['wsdl:description']['wsdl:service'];
+                console.log(serviceMapping);
+            }
+        });
+        console.log('service Mapping: ', serviceMapping);
+        return serviceMapping;
     }
 
     start(handler) {
@@ -26,12 +45,12 @@ class WebService {
     registerService(registryEndpoint) {
         let registryURL = `${registryEndpoint}/register/${this.name}`;
         fetch(registryURL, {
-                method: 'POST',
-                body: JSON.stringify(this.endpoint),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            method: 'POST',
+            body: JSON.stringify(this.endpoint),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(res => res.json())
             .then(json => {
                 if (json.result) {
@@ -43,12 +62,12 @@ class WebService {
     unregisterService(registryEndpoint) {
         let registryURL = `${registryEndpoint}/unregister/${this.name}`;
         fetch(registryURL, {
-                method: 'POST',
-                body: JSON.stringify(this.endpoint),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            method: 'POST',
+            body: JSON.stringify(this.endpoint),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(res => res.json())
             .then(json => {
                 if (json.result) {
