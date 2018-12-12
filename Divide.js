@@ -1,26 +1,41 @@
-// from flask import Flask
-// from flask import request, jsonify
+const fetch = require("node-fetch");
+const WebService = require('./WebService')
 
-// app = Flask(__name__)
+const port = process.env.PORT || 5004;
+const SLBEndpoint = "http://localhost:8082";
 
-// @app.route("/")
-// def hello():
-//     return "Hello World!"
+let requesthandler = (req, res) => {
+    if (req.method == WebService.METHOD.GET) {
+        handleGET(req, res);
+    }
+};
 
-// @app.route('/arith/add', methods=['GET'])
-// def addTwoNos():
-//     return jsonify(int(request.args['x']) + int(request.args['y']))
+let handleGET = async function (req, res) {
+    if (req.path == "/arith/div") {
+        let dividend = req.query['x'];
+        let divisor = req.query['y'];
+        let quotient = 0;
+        try {
+            while (dividend > 0) {
+                let serviceURL = `${SLBEndpoint}/arith/sub?x=${dividend}&y=${divisor}`;
+                let response = await fetch(serviceURL);
+                let json = await response.json();
+                dividend = json.result;
+                quotient++;
+            }
 
-// @app.route('/arith/subtract', methods=['GET'])
-// def subTwoNos():
-//     return jsonify(int(request.args['x']) - int(request.args['y']))
+            res.send({
+                result: quotient,
+                message: 'Division done successfully'
+            });
+        } catch (exception) {
+            res.send({
+                result: 0,
+                message: 'Division failed'
+            });
+        }
+    }
+};
 
-// # @app.route('/arith/multiply', methods=['GET'])
-// # def mulTwoNos():
-// #     product = 1
-// #     for i in range(int(request.args['x'])):
-// #         product = addTwoNos(product, int(request.args['y']))
-// #     return product
-
-// # if __name__ == '__main__':
-// app.run()
+const division = new WebService("DIV", port);
+division.start(requesthandler);

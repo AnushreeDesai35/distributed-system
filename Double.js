@@ -11,30 +11,27 @@ let requesthandler = (req, res) => {
 };
 
 let handleGET = async function (req, res) {
-    if (req.path == "/arith/mul") {
+    if (req.path == "/arith/double") {
         let x = req.query['x'];
-        let y = req.query['y'];
         let product = 0;
         try {
-            for (let i = 0; i < y; i++) {
-                let serviceURL = `${SLBEndpoint}/arith/add?x=${product}&y=${x}`;
-                let response = await fetch(serviceURL);
-                let json = await response.json();
-                product = json.result;
-            }
+            let serviceURL = `${SLBEndpoint}/arith/mul?x=${x}&y=2`;
+            let response = await fetch(serviceURL);
+            let json = await response.json();
+            product = json.result;
 
             res.send({
                 result: product,
-                message: 'Multiplication done successfully'
+                message: 'Double done successfully'
             });
         } catch (exception) {
             res.send({
                 result: 0,
-                message: 'Multiplication failed'
+                message: 'Double failed'
             });
         }
     }
 };
 
-const multiply = new WebService("MUL", port);
-multiply.start(requesthandler);
+const double = new WebService("DOUBLE", port);
+double.start(requesthandler);
