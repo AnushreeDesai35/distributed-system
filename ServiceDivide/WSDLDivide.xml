@@ -11,18 +11,18 @@
     <xs:import namespace="http://www.bookstore.org/booklist/xsd" schemaLocation="booklist.xsd"/>
   </wsdl:types>
 
-  <wsdl:interface name="AddOperation">
-    <wsdl:operation name="addTwoNums" pattern="http://www.w3.org/ns/wsdl/in-out" style="http://www.w3.org/ns/wsdl/style/iri" wsdlx:safe="true">
+  <wsdl:interface name="DivideOperation">
+    <wsdl:operation name="divideTwoNums" pattern="http://www.w3.org/ns/wsdl/in-out" style="http://www.w3.org/ns/wsdl/style/iri" wsdlx:safe="true">
       <wsdl:input messageLabel="In" element="msg:sumRequest"/>
       <wsdl:output messageLabel="Out" element="msg:Response"/>
     </wsdl:operation>
   </wsdl:interface>
 
-  <wsdl:binding name="AddHTTPBinding" type="http://www.w3.org/ns/wsdl/http" interface="tns:AddOperation">
-    <wsdl:operation ref="tns:addTwoNums" whttp:method="GET"/>
+  <wsdl:binding name="DivideHTTPBinding" type="http://www.w3.org/ns/wsdl/http" interface="tns:DivideOperation">
+    <wsdl:operation ref="tns:divideTwoNums" whttp:method="GET"/>
   </wsdl:binding>
 
-  <wsdl:service name="Add" interface="tns:AddOperation">
-    <wsdl:endpoint name="AddHTTPEndpoint" binding="tns:AddHTTPBinding" address="http://localhost:5003/arith/add/"></wsdl:endpoint>
+  <wsdl:service name="Divide" interface="tns:DivideOperation">
+    <wsdl:endpoint name="DivideHTTPEndpoint" binding="tns:DivideHTTPBinding" address="http://localhost:5003/arith/divide/"></wsdl:endpoint>
   </wsdl:service>
 </wsdl:description>

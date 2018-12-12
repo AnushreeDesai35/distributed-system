@@ -8,7 +8,7 @@
   xmlns:msg="http://www.arthmetic.com/xsd">
 
   <wsdl:types>
-    <xs:import namespace="http://www.bookstore.org/booklist/xsd" schemaLocation="booklist.xsd"/>
+    <xs:import namespace="http://www.arthmetic.com/wsdl/xsd" schemaLocation="arith.xsd"/>
   </wsdl:types>
 
   <wsdl:interface name="AddOperation">
