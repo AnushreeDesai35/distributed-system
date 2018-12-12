@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const WebService = require('./WebService')
+const WebService = require('../WebService')
 
 const port = process.env.PORT || 5004;
 const SLBEndpoint = "http://localhost:8082";

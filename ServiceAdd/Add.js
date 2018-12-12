@@ -1,4 +1,4 @@
-const WebService = require('./WebService')
+const WebService = require('../WebService')
 
 const port = process.env.PORT || 5003;
 
