@@ -5,13 +5,13 @@ const fs = require('fs');
 const app = express();
 const convert = require('xml-js');
 
-const wsdlFile = "./AddWSDL.xml";
+serviceMapping = {};
 
 app.get("/services", (req, res) => {
-    // console.log(`Request: ${req.url}`);
+    console.log(`Request: ${req.url}`);
     res.send({
-        result: xmlData,
-        message: 'Service endpoint returned successfully'
+        result: serviceMapping,
+        message: 'Service endpoints returned successfully'
     });
 });
 
@@ -60,7 +60,8 @@ fileArray.forEach((file) => {
                 spaces: 4
             });
             filesXMLData[file] = jsonData;
-            console.log(filesXMLData[file]['wsdl:description']['wsdl:binding']);
+            serviceMapping = filesXMLData[file]['wsdl:description']['wsdl:service'];
+            console.log(serviceMapping);
         }
     });
 });
