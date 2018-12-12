@@ -19,3 +19,13 @@ let handleGET = (req, res) => {
 
 const add = new WebService("Add", port);
 add.start(requesthandler);
+
+// XML schema for service
+// Request Forwarding
+// Handle add/register and delete/unregister in ServiceRegistry.js local json object
+// Heart Beat
+// Least Comm
+// Experiments
+// Graph
+// Report Writing
+
