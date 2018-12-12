@@ -36,5 +36,5 @@ let handleGET = async function (req, res) {
     }
 };
 
-const multiply = new WebService("MUL", port);
+const multiply = new WebService("Multiply", port);
 multiply.start(requesthandler);

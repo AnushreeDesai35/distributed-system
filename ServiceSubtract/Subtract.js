@@ -1,21 +1,21 @@
-const WebService = require('../WebService')
+const WebService = require('../WebService');
 
 const port = process.env.PORT || 5004;
 
 let requesthandler = (req, res) => {
-  if (req.method == WebService.METHOD.GET) {
-    handleGET(req, res);    
-  }
+    if (req.method == WebService.METHOD.GET) {
+        handleGET(req, res);    
+    }
 };
 
 let handleGET = (req, res) => {
-  if(req.path == "/arith/sub"){
-    res.send({
-      result: parseInt(req.query['x']) - parseInt(req.query['y']),
-      message: 'Subtraction done successfully'
-    });
-  }
+    if(req.path == "/arith/sub"){
+        res.send({
+            result: parseInt(req.query['x']) - parseInt(req.query['y']),
+            message: 'Subtraction done successfully'
+        });
+    }
 };
 
-const subtract = new WebService("SUB", port);
+const subtract = new WebService("Subtract", port);
 subtract.start(requesthandler);

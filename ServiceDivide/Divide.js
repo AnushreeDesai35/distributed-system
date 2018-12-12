@@ -37,5 +37,5 @@ let handleGET = async function (req, res) {
     }
 };
 
-const division = new WebService("DIV", port);
+const division = new WebService("Divide", port);
 division.start(requesthandler);

@@ -33,5 +33,5 @@ let handleGET = async function (req, res) {
     }
 };
 
-const double = new WebService("DOUBLE", port);
+const double = new WebService("Double", port);
 double.start(requesthandler);

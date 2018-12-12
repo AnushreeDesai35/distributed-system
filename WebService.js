@@ -16,7 +16,7 @@ class WebService {
     getWSDL() {
         let fileXMLData = null;
         let serviceMapping = null;
-        fs.readFile('./WSDL'+this.name+'.xml', (error, data) => {
+        fs.readFile('Service'+this.name+'/WSDL'+this.name+'.xml', (error, data) => {
             if(error){
                 console.log('Error while reading file', error);
             }
@@ -25,12 +25,10 @@ class WebService {
                     compact: true,
                     spaces: 4
                 });
-                fileXMLData[file] = jsonData;
-                serviceMapping = fileXMLData[file]['wsdl:description']['wsdl:service'];
-                console.log(serviceMapping);
+                fileXMLData = jsonData;
+                console.log(fileXMLData);
             }
         });
-        console.log('service Mapping: ', serviceMapping);
         return serviceMapping;
     }
 

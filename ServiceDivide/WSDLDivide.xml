@@ -23,6 +23,6 @@
   </wsdl:binding>
 
   <wsdl:service name="Divide" interface="tns:DivideOperation">
-    <wsdl:endpoint name="DivideHTTPEndpoint" binding="tns:DivideHTTPBinding" address="http://localhost:5003/arith/divide/"></wsdl:endpoint>
+    <wsdl:endpoint name="DivideHTTPEndpoint" binding="tns:DivideHTTPBinding" address="http://localhost:5003/arith/div/"></wsdl:endpoint>
   </wsdl:service>
 </wsdl:description>
