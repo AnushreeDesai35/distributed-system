@@ -54,8 +54,35 @@ app.post("/register/:serviceName", (req, res) => {
         message: "success"
     });
     console.log(serviceMapping);
-    // init heartbeat
-    // call LB/updateSR
+    // init heartbeat socket
+});
+
+app.post("/unregister/:serviceName", (req, res) => {
+    let serviceName = req.params.serviceName;
+    let serviceRecord = serviceMapping[serviceName];
+    if(serviceRecord){
+        let idx = serviceRecord.endpoints.indexOf(req.body.address);
+        if(idx > 0){
+            serviceMapping[serviceName].endpoints.splice(idx, 1);
+
+            console.log("updateSR")
+            updateCachedRegistry();
+
+            res.send({
+                result: 1,
+                message: "success"
+            });
+        
+            console.log(serviceMapping);
+            // close heartbeat socket
+            return;
+        }
+    }
+
+    res.send({
+        result: 0,
+        message: "failed"
+    });
 });
 
 app.listen(port, () => {

@@ -81,7 +81,7 @@ class WebService {
             .then(res => res.json())
             .then(json => {
                 if (json.result) {
-                    // init heartbeat
+                    // stop heartbeat
                 }
             });
     }
