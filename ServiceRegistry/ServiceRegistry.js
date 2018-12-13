@@ -7,7 +7,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const LBEndpoints = ["http://localhost:80"];
+const LBEndpoints = ["http://localhost:80", "http://localhost:8088"];
 
 serviceMapping = {};
 

@@ -87,6 +87,11 @@ class WebService {
     }
 }
 
+WebService.Endpoints = {
+    SLB: "http://localhost:8088",
+    LBFallback: "http://localhost:80"
+}
+
 WebService.METHOD = {
     GET: "GET",
     POST: "POST",
