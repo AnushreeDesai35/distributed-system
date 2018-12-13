@@ -3,21 +3,26 @@ const express = require("express");
 const bodyParser = require('body-parser');
 
 const PORT = 80;
-const registryServer = ["http://localhost:5005"];
+const registryServer = ["http://localhost:8081"];
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 let cachedSR;
-let current = 0;
+let serverLoads = {};
 
-let getServiceParams = (request) => {
+let getOriginReqParams = (request) => {
+    console.log(request.url)
+    return request.url.substr(request.url.indexOf('?'));
+};
+
+let getServiceName = (request) => {
+    console.log(request.path)
     return request.path.substr(request.path.lastIndexOf('/') + 1);
 };
 
 let fetchCSR = async function (request, response) {
-    let serviceName = getServiceParams(request);
     let dicoveryRequest = registryServer[0] + "/services";
     console.log('discovery request: ',dicoveryRequest)
     let resp = await fetch(dicoveryRequest);
@@ -29,12 +34,17 @@ let fetchCSR = async function (request, response) {
 let forwardServiceRequest = (request, response) => {
     console.log("^^^^^^^^^^^^^^^^^cachedSR");
     console.log(cachedSR);
-    console.log(current);
-    console.log(request.url);
-    console.log(getServiceParams(request))
-    let endpoints = cachedSR[getServiceParams(request)].endpoints;
-    let serviceUrl = "http://" + endpoints[current] + request.url;
-    current = (current + 1) % cachedSR.length;
+    console.log(getOriginReqParams(request));
+    console.log(getServiceName(request))
+
+    let serviceName = getServiceName(request);
+    let endpoints = cachedSR[serviceName].endpoints;
+    let loadStatus = serverLoads[serviceName] || 0;
+
+    let serviceUrl = endpoints[loadStatus] + getOriginReqParams(request);
+    loadStatus = (loadStatus + 1) % endpoints.length;
+    serverLoads[serviceName] = loadStatus;
+
     console.log(`forwarded: ${serviceUrl}`);
     response.redirect(serviceUrl);
 };
@@ -49,20 +59,21 @@ let requestHandler = (request, response) => {
     else {
         fetchCSR(request, response).then((data) => {
             cachedSR = data;
+            serverLoads[getServiceName(request)] = 0;
             forwardServiceRequest(request, response);
         });
     }
 };
 
-let updateCSR = function(request, response) {
-    console.log(`Update CSR ${cachedSR}`);
-    let serviceMapping = request.body.serviceMapping;
+let updateCSR = (request, response) => {
+    let serviceMapping = request.body;
     cachedSR = serviceMapping;
+    console.log(cachedSR);
 };
 
 app.post("/updateSR", updateCSR);
 
-app.all('/arith/*', requestHandler);
+app.get('/arith/*', requestHandler);
 
 app.listen(PORT, (err) => {
     if (err) return console.log('something bad happened', err);

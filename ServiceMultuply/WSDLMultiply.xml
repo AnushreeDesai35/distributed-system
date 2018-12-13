@@ -23,6 +23,6 @@
   </wsdl:binding>
 
   <wsdl:service name="Multiply" interface="tns:MultiplyOperation">
-    <wsdl:endpoint name="MultiplyHTTPEndpoint" binding="tns:MultiplyHTTPBinding" address="http://localhost:5003/arith/mul/"></wsdl:endpoint>
+    <wsdl:endpoint name="MultiplyHTTPEndpoint" binding="tns:MultiplyHTTPBinding" address="http://localhost:5005/arith/multiply/"></wsdl:endpoint>
   </wsdl:service>
 </wsdl:description>

@@ -4,18 +4,25 @@ const fs = require('fs');
 const convert = require('xml-js');
 
 class WebService {
-    constructor(name, port) {
-        if (!port) {
-            throw "Port not assigned.";
-        }
+    constructor(name) {
+        this.fileXMLData = null;
+        this.endpoint = {};
         this.name = name;
-        this.wsdl = this.getWSDL();
+        this.registryEndpoint = "http://127.0.0.1:8081";
+        this.getWSDL();
         this.app = express();
     }
 
+    getEndpoint(){
+        let address = this.fileXMLData["wsdl:description"]["wsdl:service"]["wsdl:endpoint"]["_attributes"]["address"];
+        let port = address.match(/[0-9]{4}/g)[0];
+        return {
+            address, port
+        }
+    }
+
     getWSDL() {
-        let fileXMLData = null;
-        let serviceMapping = null;
+        console.log(this.name)
         fs.readFile('Service'+this.name+'/WSDL'+this.name+'.xml', (error, data) => {
             if(error){
                 console.log('Error while reading file', error);
@@ -25,19 +32,24 @@ class WebService {
                     compact: true,
                     spaces: 4
                 });
-                fileXMLData = jsonData;
-                console.log(fileXMLData);
+                this.fileXMLData = jsonData;
+                console.log(this.fileXMLData["wsdl:description"]["wsdl:service"]["wsdl:endpoint"]["_attributes"]["address"]);
+                this.endpoint = this.getEndpoint();
+                this.start();
             }
         });
-        return serviceMapping;
     }
 
-    start(handler) {
+    start() {
         this.app.listen(this.endpoint.port, () => {
             console.log(`${this.name} server listening on port ${this.endpoint.port}...`);
             this.registerService(this.registryEndpoint);
         });
-        this.app.all("*", handler);
+        this.app.get("*", this.get);
+    }
+
+    get(req, res){
+        return "Request Not Supported.";
     }
 
     registerService(registryEndpoint) {

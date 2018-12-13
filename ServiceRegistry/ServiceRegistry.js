@@ -1,9 +1,13 @@
 const express = require('express');
+const fetch = require("node-fetch");
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8081;
-const fs = require('fs');
+
 const app = express();
-const convert = require('xml-js');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const LBEndpoints = ["http://localhost:80"];
 
 serviceMapping = {};
 
@@ -15,18 +19,36 @@ app.get("/services", (req, res) => {
     });
 });
 
+let updateCachedRegistry = () => {
+    LBEndpoints.forEach(lb => {
+        console.log(lb + "/updateSR")
+        fetch(lb + "/updateSR", {
+            method: 'POST',
+            body: JSON.stringify(serviceMapping),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => {console.log("CSR updated.")});
+    });
+};
+
 app.post("/register/:serviceName", (req, res) => {
     let serviceName = req.params.serviceName;
     let serviceRecord = serviceMapping[serviceName];
     if (serviceRecord) {
-        if (serviceRecord.endpoints.indexOf(req.body.endpoint) < 0) {
-            serviceRecord.endpoints.push(req.body.endpoint);
+        if (serviceRecord.endpoints.indexOf(req.body.address) < 0) {
+            serviceRecord.endpoints.push(req.body.address);
         }
     } else {
         serviceMapping[serviceName] = {
-            endpoints: [req.body.endpoint]
+            endpoints: [req.body.address]
         };
     }
+
+    console.log("updateSR")
+    updateCachedRegistry();
+
     res.send({
         result: 1,
         message: "success"
@@ -38,30 +60,4 @@ app.post("/register/:serviceName", (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}...`);
-});
-
-let fileArray = [
-    'WSDLAdd.xml',
-    'WSDLSubtract.xml',
-    'WSDLMultiply.xml',
-    'WSDLDivide.xml',
-    'WSDLDouble.xml',
-    'WSDLSquare.xml'];
-
-let filesXMLData = {};
-fileArray.forEach((file) => {
-    fs.readFile('./'+file, (error, data) => {
-        if(error){
-            console.log('Error while reading file', error);
-        }
-        else {
-            var jsonData = convert.xml2js(data, {
-                compact: true,
-                spaces: 4
-            });
-            filesXMLData[file] = jsonData;
-            serviceMapping = filesXMLData[file]['wsdl:description']['wsdl:service'];
-            // console.log(serviceMapping);
-        }
-    });
 });

@@ -23,6 +23,6 @@
   </wsdl:binding>
 
   <wsdl:service name="Add" interface="tns:AddOperation">
-    <wsdl:endpoint name="AddHTTPEndpoint" binding="tns:AddHTTPBinding" address="http://localhost:5003/arith/add/"></wsdl:endpoint>
+    <wsdl:endpoint name="AddHTTPEndpoint" binding="tns:AddHTTPBinding" address="http://localhost:5004/arith/add"></wsdl:endpoint>
   </wsdl:service>
 </wsdl:description>

@@ -23,6 +23,6 @@
   </wsdl:binding>
 
   <wsdl:service name="Subtract" interface="tns:SubtractOperation">
-    <wsdl:endpoint name="SubtractHTTPEndpoint" binding="tns:SubtractHTTPBinding" address="http://localhost:5003/arith/sub/"></wsdl:endpoint>
+    <wsdl:endpoint name="SubtractHTTPEndpoint" binding="tns:SubtractHTTPBinding" address="http://localhost:5003/arith/subtract"></wsdl:endpoint>
   </wsdl:service>
 </wsdl:description>

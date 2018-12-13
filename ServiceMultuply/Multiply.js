@@ -1,17 +1,15 @@
 const fetch = require("node-fetch");
 const WebService = require('../WebService')
 
-const port = process.env.PORT || 5004;
-const SLBEndpoint = "http://localhost:8082";
+const SLBEndpoint = "http://localhost:8081";
 
-let requesthandler = (req, res) => {
-    if (req.method == WebService.METHOD.GET) {
-        handleGET(req, res);
-    }
-};
+class MultiplyService extends WebService {
+  constructor(name) {
+    super(name);
+  }
 
-let handleGET = async function (req, res) {
-    if (req.path == "/arith/mul") {
+  get(req, res) {
+    if (req.path == "/arith/multiply") {
         let x = req.query['x'];
         let y = req.query['y'];
         let product = 0;
@@ -34,7 +32,7 @@ let handleGET = async function (req, res) {
             });
         }
     }
-};
+  }
+}
 
-const multiply = new WebService("Multiply", port);
-multiply.start(requesthandler);
+new MultiplyService("multiply");
