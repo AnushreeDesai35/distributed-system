@@ -87,11 +87,4 @@ class WebService {
     }
 }
 
-WebService.METHOD = {
-    GET: "GET",
-    POST: "POST",
-    PUT: "PUT",
-    DELETE: "DELETE"
-};
-
 module.exports = WebService;
