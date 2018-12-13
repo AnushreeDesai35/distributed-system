@@ -92,11 +92,4 @@ WebService.Endpoints = {
     LBFallback: "http://localhost:80"
 }
 
-WebService.METHOD = {
-    GET: "GET",
-    POST: "POST",
-    PUT: "PUT",
-    DELETE: "DELETE"
-};
-
 module.exports = WebService;
