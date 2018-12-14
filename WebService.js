@@ -50,7 +50,7 @@ class WebService {
         this.app.get("*", (req, res) => {
             if (!Object.keys(req.query).length) {
                 console.log("Health Checkup.");
-                return true;
+                res.send({});
             } else{
                 this.get(req, res);
                 ledger.record({

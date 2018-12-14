@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
 
 const thread = new Worker('./ServiceRegistry/HealthCheckup.js');
 thread.on('message', (threadData) => {
-    console.log('healhth data arrived: ', threadData);
+    console.log('health data arrived: ', threadData);
     registryData = _.transform(serviceMapping, (result, value, key) => {
         upServers = value.filter((item) => {
             return threadData[item];
