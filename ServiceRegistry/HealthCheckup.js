@@ -16,20 +16,20 @@ status = {};
 
 function checkup(){
 	Object.keys(serviceMapping).forEach((key) => {
-		serviceMapping[key]['endpoints'].forEach((endpoint) => {
-			callHealthCheck(key, endpoint);
+		serviceMapping[key].forEach((endpoint) => {
+			callHealthCheck(endpoint);
 		});
 	});
 }
 
-let callHealthCheck = async function(key, endpoint) {
+let callHealthCheck = async function(endpoint) {
 	try{
 		let response = await fetch(endpoint+'?x=10&y=5');
 		let json = await response.json();
 		let result = json.result;
-		status[key] = true;
+		status[endpoint] = true;
 	}
 	catch(err){
-		status[key] = false;
+		status[endpoint] = false;
 	}
 }

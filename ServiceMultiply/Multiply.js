@@ -24,7 +24,7 @@ class MultiplyService extends WebService {
             message: 'Multiplication done successfully'
         });
     } catch (exception) {
-        if(endpoint == WebService.Endpoints.LBFallback){
+        if(endpoint == WebService.Config.LBFallback){
             res.send({
                result: 0,
                message: "Multiplication Failed" 
@@ -32,13 +32,13 @@ class MultiplyService extends WebService {
             return;
         }
         console.log("Falling Back....................")
-        this.computeResult(req, res, WebService.Endpoints.LBFallback);
+        this.computeResult(req, res, WebService.Config.LBFallback);
     }
   }
 
   get(req, res) {
     if (req.path == "/arith/multiply") {
-        this.computeResult(req, res, WebService.Endpoints.SLB);
+        this.computeResult(req, res, WebService.Config.SLB);
     }
   }
 }

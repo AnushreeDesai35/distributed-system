@@ -38,7 +38,7 @@ let forwardServiceRequest = (request, response) => {
     console.log(getServiceName(request))
 
     let serviceName = getServiceName(request);
-    let endpoints = cachedSR[serviceName].endpoints;
+    let endpoints = cachedSR[serviceName];
     let loadStatus = serverLoads[serviceName] || 0;
 
     let serviceUrl = endpoints[loadStatus] + getOriginReqParams(request);

@@ -91,7 +91,7 @@ class WebService {
     }
 }
 
-WebService.Endpoints = {
+WebService.Config = {
     SLB: "http://localhost:8088",
     LBFallback: "http://localhost:80"
 }

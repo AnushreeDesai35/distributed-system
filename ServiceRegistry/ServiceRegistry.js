@@ -1,38 +1,47 @@
 const express = require('express');
 const fs = require('fs');
+// const omitBy = require("lodash").omitBy;
 const fetch = require("node-fetch");
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8081;
-const { Worker } = require('worker_threads');
+const {
+    Worker
+} = require('worker_threads');
 const FILENAME = "registry.json";
 
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 const LBEndpoints = ["http://localhost:80", "http://localhost:8088"];
 const thread = new Worker('./ServiceRegistry/HealthCheckup.js');
+thread.on('message', (threadData) => {
+    console.log('healhth data arrived: ', threadData);
+});
 
 serviceMapping = {};
 
-fs.readFile(FILENAME, (error, data) => {
-    if(error){
-        console.log('Error while reading file', error);
-    }
-    else {
-        serviceMapping = JSON.parse(data);
-        console.log(serviceMapping);
-        app.listen(port, () => {
-            console.log(`Server listening on port ${port}...`);
+let loadSR = (exists) => {
+    if(exists){
+        fs.readFile(FILENAME, (error, data) => {
+            if (error) {
+                console.log('Error while reading file', error);
+            } else {
+                serviceMapping = JSON.parse(data);
+                console.log(serviceMapping);
+                thread.postMessage(serviceMapping);
+            }
         });
-
-        thread.on('message', (threadData) => {
-            console.log('healhth data arrived: ', threadData);
-        });
-
-        thread.postMessage(serviceMapping);
     }
-});
+    
+    app.listen(port, () => {
+        console.log(`Server listening on port ${port}...`);
+    });
+}
+
+fs.exists(FILENAME, loadSR);
 
 app.get("/services", (req, res) => {
     console.log(`Request: ${req.url}`);
@@ -51,13 +60,15 @@ let updateCachedRegistry = () => {
     LBEndpoints.forEach(lb => {
         console.log(lb + "/updateSR");
         fetch(lb + "/updateSR", {
-            method: 'POST',
-            body: JSON.stringify(serviceMapping),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => {console.log("CSR updated.");});
+                method: 'POST',
+                body: JSON.stringify(serviceMapping),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                console.log("CSR updated.");
+            });
     });
 };
 
@@ -65,13 +76,11 @@ app.post("/register/:serviceName", (req, res) => {
     let serviceName = req.params.serviceName;
     let serviceRecord = serviceMapping[serviceName];
     if (serviceRecord) {
-        if (serviceRecord.endpoints.indexOf(req.body.address) < 0) {
-            serviceRecord.endpoints.push(req.body.address);
+        if (serviceRecord.indexOf(req.body.address) < 0) {
+            serviceRecord.push(req.body.address);
         }
     } else {
-        serviceMapping[serviceName] = {
-            endpoints: [req.body.address]
-        };
+        serviceMapping[serviceName] = [req.body.address];
     }
 
     updateCachedRegistry();
@@ -87,10 +96,10 @@ app.post("/register/:serviceName", (req, res) => {
 app.post("/unregister/:serviceName", (req, res) => {
     let serviceName = req.params.serviceName;
     let serviceRecord = serviceMapping[serviceName];
-    if(serviceRecord){
-        let idx = serviceRecord.endpoints.indexOf(req.body.address);
-        if(idx > 0){
-            serviceMapping[serviceName].endpoints.splice(idx, 1);
+    if (serviceRecord) {
+        let idx = serviceRecord.indexOf(req.body.address);
+        if (idx > 0) {
+            serviceMapping[serviceName].splice(idx, 1);
 
             console.log("updateSR")
             updateCachedRegistry();
@@ -99,7 +108,7 @@ app.post("/unregister/:serviceName", (req, res) => {
                 result: 1,
                 message: "success"
             });
-        
+
             console.log(serviceMapping);
             // close heartbeat socket
             return;
