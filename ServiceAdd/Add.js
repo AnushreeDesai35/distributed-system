@@ -19,8 +19,6 @@ class AddService extends WebService {
 
 new AddService("add");
 
-// XML schema for service
-// Heart Beat
 // Least Comm
 // Experiments
 // Graph

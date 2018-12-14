@@ -30,6 +30,7 @@ thread.on('message', (threadData) => {
         result[key] = upServers;
     }, {});
     console.log("Registry Data:", registryData);
+    updateCachedRegistry();
 });
 
 
@@ -61,11 +62,13 @@ app.get("/services", (req, res) => {
     });
 });
 
-let updateCachedRegistry = () => {
-
+let updateRegistryInfo = () => {
     fs.writeFile(FILENAME, JSON.stringify(serviceMapping), 'utf8', () => {
         console.log("saved.")
     });
+};
+
+let updateCachedRegistry = () => {
 
     LBEndpoints.forEach(lb => {
         console.log(lb + "/updateSR");
@@ -93,7 +96,7 @@ app.post("/register/:serviceName", (req, res) => {
         serviceMapping[serviceName] = [req.body.address];
     }
 
-    updateCachedRegistry();
+    updateRegistryInfo();
     console.log('service mapping: ', serviceMapping);
     thread.postMessage(serviceMapping);
 
@@ -112,7 +115,8 @@ app.post("/unregister/:serviceName", (req, res) => {
             serviceMapping[serviceName].splice(idx, 1);
 
             console.log("updateSR")
-            updateCachedRegistry();
+            updateRegistryInfo();
+            thread.postMessage(serviceMapping);
 
             res.send({
                 result: 1,

@@ -13,18 +13,15 @@ let cachedSR;
 let serverLoads = {};
 
 let getOriginReqParams = (request) => {
-    console.log(request.url)
     return request.url.substr(request.url.indexOf('?'));
 };
 
 let getServiceName = (request) => {
-    console.log(request.path)
     return request.path.substr(request.path.lastIndexOf('/') + 1);
 };
 
 let fetchCSR = async function (request, response) {
     let dicoveryRequest = registryServer[0] + "/services";
-    console.log('discovery request: ',dicoveryRequest)
     let resp = await fetch(dicoveryRequest);
     let json = await resp.json();
     let endpoints = json.result;
@@ -32,11 +29,6 @@ let fetchCSR = async function (request, response) {
 };
 
 let forwardServiceRequest = (request, response) => {
-    console.log("^^^^^^^^^^^^^^^^^cachedSR");
-    console.log(cachedSR);
-    console.log(getOriginReqParams(request));
-    console.log(getServiceName(request))
-
     let serviceName = getServiceName(request);
     let endpoints = cachedSR[serviceName];
     let loadStatus = serverLoads[serviceName] || 0;
@@ -50,10 +42,8 @@ let forwardServiceRequest = (request, response) => {
 };
 
 let requestHandler = (request, response) => {
-    console.log(`Request: ${request.url}`);
+    // console.log(`Request: ${request.url}`);
     if (cachedSR) {
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        console.log(cachedSR);
         forwardServiceRequest(request, response);
     }
     else {
@@ -68,7 +58,7 @@ let requestHandler = (request, response) => {
 let updateCSR = (request, response) => {
     let serviceMapping = request.body;
     cachedSR = serviceMapping;
-    console.log(cachedSR);
+    // console.log(cachedSR);
 };
 
 app.post("/updateSR", updateCSR);

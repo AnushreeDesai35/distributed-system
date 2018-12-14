@@ -13,21 +13,21 @@ class WebService {
         this.app = express();
     }
 
-    getEndpoint(){
+    getEndpoint() {
         let address = this.fileXMLData["wsdl:description"]["wsdl:service"]["wsdl:endpoint"]["_attributes"]["address"];
         let port = address.match(/[0-9]{4}/g)[0];
         return {
-            address, port
+            address,
+            port
         }
     }
 
     getWSDL() {
         console.log(this.name);
-        fs.readFile('Service'+this.name+'/WSDL'+this.name+'.xml', (error, data) => {
-            if(error){
+        fs.readFile('Service' + this.name + '/WSDL' + this.name + '.xml', (error, data) => {
+            if (error) {
                 console.log('Error while reading file', error);
-            }
-            else {
+            } else {
                 var jsonData = convert.xml2js(data, {
                     compact: true,
                     spaces: 4
@@ -48,8 +48,8 @@ class WebService {
         this.app.get("*", this.get);
     }
 
-    get(req, res){
-        if(!Object.keys(req.query).length){
+    get(req, res) {
+        if (!Object.keys(req.query).length) {
             console.log("Health Checkup.");
             return true;
         }
@@ -58,12 +58,12 @@ class WebService {
     registerService(registryEndpoint) {
         let registryURL = `${registryEndpoint}/register/${this.name}`;
         fetch(registryURL, {
-            method: 'POST',
-            body: JSON.stringify(this.endpoint),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+                method: 'POST',
+                body: JSON.stringify(this.endpoint),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => res.json())
             .then(json => {
                 json.result
@@ -73,12 +73,12 @@ class WebService {
     unregisterService(registryEndpoint) {
         let registryURL = `${registryEndpoint}/unregister/${this.name}`;
         fetch(registryURL, {
-            method: 'POST',
-            body: JSON.stringify(this.endpoint),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+                method: 'POST',
+                body: JSON.stringify(this.endpoint),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => res.json())
             .then(json => {
                 json.result
@@ -92,9 +92,12 @@ WebService.Config = {
 }
 
 WebService.sleep = (ms) => {
-    return new Promise(resolve=>{
-        setTimeout(resolve,ms);
-    })
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > ms) {
+            break;
+        }
+    }
 };
 
 module.exports = WebService;
