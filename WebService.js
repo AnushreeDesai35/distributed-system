@@ -2,6 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const fs = require('fs');
 const convert = require('xml-js');
+const ledger = require("./BlockChain/Ledger");
 
 class WebService {
     constructor(name) {
@@ -45,14 +46,21 @@ class WebService {
             console.log(`${this.name} server listening on port ${this.endpoint.port}...`);
             this.registerService(this.registryEndpoint);
         });
-        this.app.get("*", this.get);
+        this.app.get("*", (req, res) => {
+            if (!Object.keys(req.query).length) {
+                console.log("Health Checkup.");
+                return true;
+            } else{
+                this.get(req, res);
+                ledger.record({
+
+                });
+            }
+        });
     }
 
     get(req, res) {
-        if (!Object.keys(req.query).length) {
-            console.log("Health Checkup.");
-            return true;
-        }
+        return false;
     }
 
     registerService(registryEndpoint) {

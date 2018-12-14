@@ -6,7 +6,6 @@ class AddService extends WebService {
   }
 
   get(req, res) {
-    super.get(req, res);
     if (req.path == "/arith/add") {
       WebService.sleep(latency);
       res.send({

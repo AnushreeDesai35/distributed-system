@@ -38,4 +38,5 @@ class Ledger{
     }
 }
 
-module.exports = Ledger;
+let ledger = new Ledger(3);
+module.exports = ledger;

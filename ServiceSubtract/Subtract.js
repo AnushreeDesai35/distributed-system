@@ -6,7 +6,6 @@ class SubtractService extends WebService {
   }
 
   get(req, res) {
-    super.get(req, res);
     if (req.path == "/arith/subtract") {
       res.send({
         result: parseInt(req.query['x']) - parseInt(req.query['y']),

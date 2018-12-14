@@ -37,7 +37,6 @@ class MultiplyService extends WebService {
   }
 
   get(req, res) {
-    super.get(req, res);
     if (req.path == "/arith/multiply") {
         this.computeResult(req, res, WebService.Config.SLB);
     }

@@ -20,7 +20,8 @@ class Block{
     mine(work){
         let target = "0".repeat(work);
         while(!(this.hash.substr(0, work) == target)){
-            this.nonce++;
+            // console.log("mining", target, this.hash)
+            this.nounce++;
             this.hash = this.calculateHash();
         }
     }
