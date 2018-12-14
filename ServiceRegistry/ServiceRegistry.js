@@ -29,7 +29,7 @@ thread.on('message', (threadData) => {
         });
         result[key] = upServers;
     }, {});
-    console.log("Registry Data:", x);
+    console.log("Registry Data:", registryData);
 });
 
 

@@ -49,11 +49,10 @@ class WebService {
     }
 
     get(req, res){
-        return "Request Not Supported.";
-    }
-
-    initHeartbeat(){
-
+        if(!Object.keys(req.query).length){
+            console.log("Health Checkup.");
+            return true;
+        }
     }
 
     registerService(registryEndpoint) {
@@ -67,9 +66,7 @@ class WebService {
         })
             .then(res => res.json())
             .then(json => {
-                if (json.result) {
-                    this.initHeartbeat();
-                }
+                json.result
             });
     }
 
@@ -84,9 +81,7 @@ class WebService {
         })
             .then(res => res.json())
             .then(json => {
-                if (json.result) {
-                    // stop heartbeat
-                }
+                json.result
             });
     }
 }

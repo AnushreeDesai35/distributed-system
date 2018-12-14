@@ -24,7 +24,7 @@ function checkup(){
 
 let callHealthCheck = async function(endpoint) {
 	try{
-		let response = await fetch(endpoint+'?x=10&y=5');
+		let response = await fetch(endpoint);
 		let json = await response.json();
 		let result = json.result;
 		status[endpoint] = true;
