@@ -11,13 +11,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const LBEndpoints = ["http://localhost:80", "http://localhost:8088"];
+const thread = new Worker('./ServiceRegistry/HealthCheckup.js');
 
 serviceMapping = {};
-const thread = new Worker('./ServiceRegistry/HealthCheckup.js');
-thread.on('message', (threadData) => {
-    // healhth data arrived
-    console.log('healhth data arrived: ', threadData);
-});
 
 fs.readFile(FILENAME, (error, data) => {
     if(error){
@@ -29,6 +25,12 @@ fs.readFile(FILENAME, (error, data) => {
         app.listen(port, () => {
             console.log(`Server listening on port ${port}...`);
         });
+
+        thread.on('message', (threadData) => {
+            console.log('healhth data arrived: ', threadData);
+        });
+
+        thread.postMessage(serviceMapping);
     }
 });
 
@@ -72,7 +74,6 @@ app.post("/register/:serviceName", (req, res) => {
         };
     }
 
-    console.log("updateSR");
     updateCachedRegistry();
     console.log('service mapping: ', serviceMapping);
     thread.postMessage(serviceMapping);

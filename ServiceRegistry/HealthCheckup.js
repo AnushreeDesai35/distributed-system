@@ -9,7 +9,7 @@ parentPort.on('message', (data) => {
 	timer = setInterval(() => {
 		checkup();
 		parentPort.postMessage(status);
-	}, 3000);
+	}, 10000);
 });
 
 status = {};
