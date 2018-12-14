@@ -92,4 +92,10 @@ WebService.Endpoints = {
     LBFallback: "http://localhost:80"
 }
 
+WebService.sleep = (ms) => {
+    return new Promise(resolve=>{
+        setTimeout(resolve,ms);
+    })
+};
+
 module.exports = WebService;
