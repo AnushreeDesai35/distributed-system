@@ -33,16 +33,16 @@ start node ServiceAdd\Add.js
 :: Server B
 set wsdlPath=instances/serverB
 start node ServiceAdd\Add.js
-start node ServiceMultiply\ServiceMultiply.js
-start node ServiceSubtract\ServiceSubtract.js
+start node ServiceMultiply\Multiply.js
+start node ServiceSubtract\Subtract.js
 
 :: Server C
 set wsdlPath=instances/serverC
 start node ServiceAdd\Add.js
-start node ServiceMultiply\ServiceMultiply.js
-start node ServiceSubtract\ServiceSubtract.js
+start node ServiceMultiply\Multiply.js
+start node ServiceSubtract\Subtract.js
 
 :: Server D
 set wsdlPath=instances/serverD
 start node ServiceAdd\Add.js
-start node ServiceSubtract\ServiceSubtract.js
+start node ServiceSubtract\Subtract.js
