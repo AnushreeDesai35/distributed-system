@@ -22,7 +22,7 @@ class WebService {
     }
 
     getWSDL() {
-        console.log(this.name)
+        console.log(this.name);
         fs.readFile('Service'+this.name+'/WSDL'+this.name+'.xml', (error, data) => {
             if(error){
                 console.log('Error while reading file', error);
@@ -52,6 +52,10 @@ class WebService {
         return "Request Not Supported.";
     }
 
+    initHeartbeat(){
+
+    }
+
     registerService(registryEndpoint) {
         let registryURL = `${registryEndpoint}/register/${this.name}`;
         fetch(registryURL, {
@@ -64,7 +68,7 @@ class WebService {
             .then(res => res.json())
             .then(json => {
                 if (json.result) {
-                    // init heartbeat
+                    this.initHeartbeat();
                 }
             });
     }

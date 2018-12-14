@@ -3,6 +3,7 @@ const fs = require('fs');
 const fetch = require("node-fetch");
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8081;
+const { Worker } = require('worker_threads');
 const FILENAME = "registry.json";
 
 const app = express();
@@ -12,6 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const LBEndpoints = ["http://localhost:80", "http://localhost:8088"];
 
 serviceMapping = {};
+const thread = new Worker('./ServiceRegistry/HealthCheckup.js');
+thread.on('message', (threadData) => {
+    // healhth data arrived
+    console.log('healhth data arrived: ', threadData);
+});
 
 fs.readFile(FILENAME, (error, data) => {
     if(error){
@@ -41,7 +47,7 @@ let updateCachedRegistry = () => {
     });
 
     LBEndpoints.forEach(lb => {
-        console.log(lb + "/updateSR")
+        console.log(lb + "/updateSR");
         fetch(lb + "/updateSR", {
             method: 'POST',
             body: JSON.stringify(serviceMapping),
@@ -49,7 +55,7 @@ let updateCachedRegistry = () => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(res => {console.log("CSR updated.")});
+            .then(res => {console.log("CSR updated.");});
     });
 };
 
@@ -66,15 +72,15 @@ app.post("/register/:serviceName", (req, res) => {
         };
     }
 
-    console.log("updateSR")
+    console.log("updateSR");
     updateCachedRegistry();
+    console.log('service mapping: ', serviceMapping);
+    thread.postMessage(serviceMapping);
 
     res.send({
         result: 1,
         message: "success"
     });
-    console.log(serviceMapping);
-    // init heartbeat socket
 });
 
 app.post("/unregister/:serviceName", (req, res) => {
