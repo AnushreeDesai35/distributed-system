@@ -1,7 +1,9 @@
 const express = require('express');
+const fs = require('fs');
 const fetch = require("node-fetch");
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8081;
+const FILENAME = "registry.json";
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,6 +12,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const LBEndpoints = ["http://localhost:80", "http://localhost:8088"];
 
 serviceMapping = {};
+
+fs.readFile(FILENAME, (error, data) => {
+    if(error){
+        console.log('Error while reading file', error);
+    }
+    else {
+        serviceMapping = JSON.parse(data);
+        console.log(serviceMapping);
+        app.listen(port, () => {
+            console.log(`Server listening on port ${port}...`);
+        });
+    }
+});
 
 app.get("/services", (req, res) => {
     console.log(`Request: ${req.url}`);
@@ -20,6 +35,11 @@ app.get("/services", (req, res) => {
 });
 
 let updateCachedRegistry = () => {
+
+    fs.writeFile(FILENAME, JSON.stringify(serviceMapping), 'utf8', () => {
+        console.log("saved.")
+    });
+
     LBEndpoints.forEach(lb => {
         console.log(lb + "/updateSR")
         fetch(lb + "/updateSR", {
@@ -83,8 +103,4 @@ app.post("/unregister/:serviceName", (req, res) => {
         result: 0,
         message: "failed"
     });
-});
-
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}...`);
 });
