@@ -1,0 +1,28 @@
+<wsdl:description
+  xmlns:wsdl="http://www.w3.org/ns/wsdl"
+  targetNamespace="http://www.arthmetic.com/wsdl" 
+  xmlns:tns="http://www.arthmetic.com/wsdl" 
+  xmlns:whttp="http://www.w3.org/ns/wsdl/http" 
+  xmlns:wsdlx="http://www.w3.org/ns/wsdl-extensions" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:msg="http://www.arthmetic.com/xsd">
+
+  <wsdl:types>
+    <xs:import namespace="http://www.bookstore.org/booklist/xsd" schemaLocation="booklist.xsd"/>
+  </wsdl:types>
+
+  <wsdl:interface name="SubtractOperation">
+    <wsdl:operation name="subtractTwoNums" pattern="http://www.w3.org/ns/wsdl/in-out" style="http://www.w3.org/ns/wsdl/style/iri" wsdlx:safe="true">
+      <wsdl:input messageLabel="In" element="msg:sumRequest"/>
+      <wsdl:output messageLabel="Out" element="msg:Response"/>
+    </wsdl:operation>
+  </wsdl:interface>
+
+  <wsdl:binding name="SubtractHTTPBinding" type="http://www.w3.org/ns/wsdl/http" interface="tns:SubtractOperation">
+    <wsdl:operation ref="tns:subtractTwoNums" whttp:method="GET"/>
+  </wsdl:binding>
+
+  <wsdl:service name="Subtract" interface="tns:SubtractOperation">
+    <wsdl:endpoint name="SubtractHTTPEndpoint" binding="tns:SubtractHTTPBinding" address="http://localhost:5004/arith/subtract"></wsdl:endpoint>
+  </wsdl:service>
+</wsdl:description>

@@ -2,8 +2,8 @@ const fetch = require('node-fetch');
 const express = require("express");
 const bodyParser = require('body-parser');
 
-const PORT = 80;
-const registryServer = ["http://localhost:8081"];
+const PORT = process.env.PORT || 8091;
+const registryServer = process.env.REGISTRY || "http://localhost:8081";
 
 const app = express();
 app.use(bodyParser.json());

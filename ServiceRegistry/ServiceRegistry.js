@@ -4,6 +4,12 @@ const _ = require("lodash");
 const fetch = require("node-fetch");
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8081;
+
+let LBEndpoints = ["http://localhost:8091", "http://localhost:8092", "http://localhost:8088"];
+if(process.env.LB1 && process.env.LB2 && process.env.SLB){
+    LBEndpoints = [process.env.LB1, process.env.LB2, process.env.SLB];
+}
+
 const {
     Worker
 } = require('worker_threads');
@@ -17,8 +23,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-const LBEndpoints = ["http://localhost:80", "http://localhost:8088"];
 
 const thread = new Worker('./ServiceRegistry/HealthCheckup.js');
 thread.on('message', (threadData) => {

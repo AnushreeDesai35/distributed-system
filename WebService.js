@@ -9,7 +9,8 @@ class WebService {
         this.fileXMLData = null;
         this.endpoint = {};
         this.name = name;
-        this.registryEndpoint = "http://127.0.0.1:8081";
+        this.wsdlPath = process.env.wsdlPath || "Service" + this.name;
+        this.registryEndpoint = process.env.REGISTRY || "http://127.0.0.1:8081";
         this.getWSDL();
         this.app = express();
     }
@@ -25,7 +26,7 @@ class WebService {
 
     getWSDL() {
         console.log(this.name);
-        fs.readFile('Service' + this.name + '/WSDL' + this.name + '.xml', (error, data) => {
+        fs.readFile(this.wsdlPath + '/WSDL' + this.name + '.xml', (error, data) => {
             if (error) {
                 console.log('Error while reading file', error);
             } else {
@@ -95,8 +96,8 @@ class WebService {
 }
 
 WebService.Config = {
-    SLB: "http://localhost:8088",
-    LBFallback: "http://localhost:80"
+    SLB: process.env.SLB || "http://localhost:8088",
+    LBFallback: process.env.LBF || "http://localhost:80"
 }
 
 WebService.sleep = (ms) => {
