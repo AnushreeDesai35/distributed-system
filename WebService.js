@@ -85,10 +85,15 @@ class WebService {
             .then(res => res.json())
             .then(json => {
                 if (json.result) {
-                    // init heartbeat
+                    // stop heartbeat
                 }
             });
     }
+}
+
+WebService.Endpoints = {
+    SLB: "http://localhost:8088",
+    LBFallback: "http://localhost:80"
 }
 
 module.exports = WebService;

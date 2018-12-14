@@ -18,7 +18,6 @@ class AddService extends WebService {
 new AddService("add");
 
 // XML schema for service
-// Handle add/register and delete/unregister in ServiceRegistry.js local json object
 // Heart Beat
 // Least Comm
 // Experiments

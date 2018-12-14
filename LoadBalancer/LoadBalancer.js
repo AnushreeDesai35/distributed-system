@@ -79,10 +79,3 @@ app.listen(PORT, (err) => {
     if (err) return console.log('something bad happened', err);
     console.log(`server is listening on ${PORT}`);
 });
-
-
-// """
-// TODO:
-// - x-request-forward
-// - leastconn algorithm
-// """
