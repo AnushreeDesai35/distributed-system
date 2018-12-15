@@ -7,7 +7,7 @@ class AddService extends WebService {
 
   get(req, res) {
     if (req.path == "/arith/add") {
-      WebService.sleep(latency);
+      // WebService.sleep(latency);
       res.send({
         result: parseInt(req.query['x']) + parseInt(req.query['y']),
         message: 'Addition done successfully'

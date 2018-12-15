@@ -49,9 +49,10 @@ class WebService {
         });
         this.app.get("*", (req, res) => {
             if (!Object.keys(req.query).length) {
-                console.log("Health Checkup.");
+                // console.log("Health Checkup.");
                 res.send({});
             } else{
+                console.log(req.url);
                 this.get(req, res);
                 ledger.record({
 
