@@ -35,7 +35,6 @@ class WebService {
                     spaces: 4
                 });
                 this.fileXMLData = jsonData;
-                console.log(this.fileXMLData["wsdl:description"]["wsdl:service"]["wsdl:endpoint"]["_attributes"]["address"]);
                 this.endpoint = this.getEndpoint();
                 this.start();
             }
@@ -55,7 +54,11 @@ class WebService {
                 console.log(req.url);
                 this.get(req, res);
                 ledger.record({
-
+                    name: this.name,
+                    endpoint: this.endpoint,
+                    port: this.endpoint.port,
+                    params: req.params,
+                    clientIP: req.ip,
                 });
             }
         });
@@ -91,7 +94,7 @@ class WebService {
             })
             .then(res => res.json())
             .then(json => {
-                json.result
+                json.result;
             });
     }
 }
