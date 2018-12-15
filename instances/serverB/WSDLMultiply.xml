@@ -8,7 +8,7 @@
   xmlns:msg="http://www.arthmetic.com/xsd">
 
   <wsdl:types>
-    <xs:import namespace="http://www.bookstore.org/booklist/xsd" schemaLocation="booklist.xsd"/>
+    <xs:import namespace="http://www.arith.org/arithmetic/xsd" schemaLocation="arithmetic.xsd"/>
   </wsdl:types>
 
   <wsdl:interface name="MultiplyOperation">
