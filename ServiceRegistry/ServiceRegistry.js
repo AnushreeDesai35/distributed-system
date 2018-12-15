@@ -85,6 +85,9 @@ let updateCachedRegistry = () => {
             })
             .then(res => {
                 console.log("CSR updated.");
+            })
+            .catch((err)=> {
+
             });
     });
 };

@@ -20,7 +20,7 @@ set SLB=http://localhost:8088
 start node --experimental-worker ServiceRegistry\ServiceRegistry.js
 
 ::nginx - DNS for LBs
-start C:\nginx\nginx
+:: start C:\nginx\nginx
 
 ::Web Services
 set SLB=http://localhost:8088
